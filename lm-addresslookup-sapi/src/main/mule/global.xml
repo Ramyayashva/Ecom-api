@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd  http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+    <http:listener-config name="lm-osvc-sapi-httpListenerConfig">
+        <http:listener-connection host="${http.host}" port="8081" readTimeout="${http.readtimeout}">
+		</http:listener-connection>
+    </http:listener-config>
+    <apikit:config name="lm-osvc-sapi-config" api="resource::5bf14b7b-b805-4fa3-b657-fccb6ea30df9:lm-addresslookup-sapi:1.0.1:raml:zip:lm-osvc-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <api-gateway:autodiscovery apiId="19291477" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="aa9ae0ed-efea-48ee-836d-0fd2a8194888" flowRef="lm-osvc-sapi-main" />
+    <configuration-properties doc:name="Configuration properties" doc:id="c229c1fd-46cb-4e35-a1eb-889beedfaa76" file="${mule.env}.yaml" />
+    <global-property doc:name="Global Property" doc:id="8783cc92-e5c4-47d0-93b3-90d1db04bfe8" name="mule.key" value="Training@9876543" />
+    <global-property doc:name="Global Property" doc:id="b39be0d6-94ac-4c77-b8e5-2ab63a74683c" name="mule.env" value="dev" />
+    <http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="3f40b5f8-e93c-497d-b27c-3fef8f4c4283" >
+		<http:request-connection protocol="HTTPS" host="${token.host}" port="${token.port}" connectionIdleTimeout="${token.idletimeout}" />
+	</http:request-config>
+    <secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="2c99988f-b424-4476-bf1c-e91cfdeedb33" file="${mule.env}.yaml" key="${mule.key}" />
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="7702673c-3f45-417d-8783-b00caaad4c84" maxEntries="${object-store.maxEntries}" entryTtl="${object-store.entryTtl}" expirationInterval="${object-store.expirationInterval}"/>
+	<ee:object-store-caching-strategy name="Caching_Strategy" doc:name="Caching Strategy" doc:id="e0c550e4-af7f-426d-9bf8-9c8f93f64760" objectStore="Object_store"/>
+	<tls:context name="TLS_Context" doc:name="TLS Context" doc:id="0c2c66ee-c383-4c19-88bd-8f5c4622ffbb" >
+		<tls:trust-store insecure="true" />
+		<tls:key-store type="jks" path="${ks.file}" alias="${ks.alias}" keyPassword="${secure::ks.password}" password="${secure::ks.password}" />
+	</tls:context>
+	<import doc:name="Import" doc:id="2f88bdf3-a917-4587-965f-5384b1c4ded1" file="global-error-handler.xml" />
+
+</mule>

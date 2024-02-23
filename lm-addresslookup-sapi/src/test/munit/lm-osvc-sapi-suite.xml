@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="lm-osvc-sapi-suite.xml" />
+	
+		<munit:test name="lm-osvc-sapi-console-test" doc:id="e812b80c-1ca1-47e0-8144-e3a0851e515a">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="9f3d4c3f-3bb4-49b6-822c-66490da13d1a" processor="http:listener">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/console/*" attributeName="path" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ead5fbf9-e742-49ff-9d45-840160e84393" processor="apikit:console">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="b6ef5a33-1ab7-4792-a5c4-6eaaaba1b205">
+				<munit:payload value="#[readUrl('classpath://lmosvcsapiconsoletest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://lmosvcsapiconsoletest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow-ref to lm-osvc-sapi-console" doc:id="54157905-6900-409f-a76d-b4b63b2e5f06" name="lm-osvc-sapi-console" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert doc:name="Assert payload" doc:id="34a5999d-e83e-4e03-984c-cfd9f280710a" message="The payload does not match">
+				<munit-tools:that><![CDATA[#[%dw 2.0
+import lmosvcsapiconsoletest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+<munit:test name="lm-osvc-sapi-console-error-test" doc:id="42457e2b-916c-457c-b60d-f90c5cca2eac" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c3ab0a28-d24c-435b-bee3-3de174be990b" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/console/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c07ba9cc-c0c5-4834-a0e5-77772eba9240" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="49adf07b-84b7-4e0e-bfd5-09458c97a256" >
+				<flow-ref doc:name="Flow-ref to lm-osvc-sapi-console" doc:id="64f76100-a6b5-4b4c-afa2-922be7ed7fb3" name="lm-osvc-sapi-console" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="8c7abdf3-a076-45fa-a8b2-59374b9ea68b" type="ANY"/>
+				</error-handler>
+			</try>
+		</munit:execution>
+	</munit:test>
+					<munit:test name="get:\address\(postcode):lm-osvc-sapi-config-test-error6" doc:id="16bcc806-8fd5-40f9-a12d-36afb2a6cfd1" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="b27eea66-bfd9-4c21-8cbf-a3a4fb0442a7" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			
+
+
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="fecc8ab9-59dc-48a2-a4dc-e1d96d29b19a" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			
+
+
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="8186f814-6ef3-4038-a74e-998fdd3e4005" >
+				<munit:payload value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="f0b58fd1-8590-496c-b84f-80cc9785757a" >
+				<flow-ref doc:name="Flow-ref to get:\address\(postcode):lm-osvc-sapi-config" doc:id="9684884d-8cd8-4e45-970d-3bb3afaa2d1d" name="lm-osvc-sapi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ee5b3fff-8d79-439d-b307-363d46369c72" type="APIKIT:NOT_IMPLEMENTED"/>
+				</error-handler>
+			</try>
+		</munit:execution>
+	</munit:test>
+				<munit:test name="get:\address\(postcode):lm-osvc-sapi-config-test-error5" doc:id="36422a5a-c22f-442d-b0bd-fea82d161c77" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c7e6b91f-c0fc-4488-8ec7-64954e758205" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			
+
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0f524f56-44f5-4e75-8d3b-33bbf1656340" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			
+
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="366c1573-b398-4194-bff9-fcafe69c599d" >
+				<munit:payload value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="ceec7dda-4001-4301-864c-c01b8115cc90" >
+				<flow-ref doc:name="Flow-ref to get:\address\(postcode):lm-osvc-sapi-config" doc:id="4fab3325-d257-46f4-9190-7364128df468" name="lm-osvc-sapi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6cc0bc7b-bb56-4001-b078-67ccda61f176" type="APIKIT:UNSUPPORTED_MEDIA_TYPE"/>
+				</error-handler>
+			</try>
+		</munit:execution>
+	</munit:test>
+			<munit:test name="get:\address\(postcode):lm-osvc-sapi-config-test-error4" doc:id="eb39b0f1-c03b-45b7-98d4-dc0a1014e0f5" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="4dea5b9e-88b3-4eed-99dd-edabe3e75815" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="c2d6946c-fa57-4244-85f5-9b3f0fd9bd12" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			
+
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="c0413e20-3758-49e3-8171-b6077414b894" >
+				<munit:payload value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="74bb4a3b-a49e-477b-b268-8e71f062102d" >
+				<flow-ref doc:name="Flow-ref to get:\address\(postcode):lm-osvc-sapi-config" doc:id="31b759fb-d1c8-45c6-9b17-8036bbaf4047" name="lm-osvc-sapi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="638e9c07-f470-4dd2-8aa0-bd4c11b92235" type="APIKIT:NOT_ACCEPTABLE"/>
+				</error-handler>
+			</try>
+		</munit:execution>
+	</munit:test>
+		<munit:test name="get:\address\(postcode):lm-osvc-sapi-config-test-error3" doc:id="0bafa964-0691-4ba8-b08e-8b455a8ba640" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="11dab88c-342b-4cb2-b28b-71cb1b39f273" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="32cbd7ba-367a-441b-a737-cd88c4bcdd99" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="9c6242ee-c80c-4963-8295-7f19d4cbe22f" >
+				<munit:payload value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="2b971f77-1da7-44b0-8d3e-e6bc9e24b213" >
+				<flow-ref doc:name="Flow-ref to get:\address\(postcode):lm-osvc-sapi-config" doc:id="05736fe2-b7aa-40bc-979b-c969c0d34880" name="lm-osvc-sapi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="64fbb575-5725-4573-ba8c-4fc508c89ae6" type="APIKIT:METHOD_NOT_ALLOWED"/>
+				</error-handler>
+			</try>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="get:\address\(postcode):lm-osvc-sapi-config-test-error1" doc:id="f15d46c1-6fde-478e-aade-e2d139c3f655" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a1bb0e20-c87a-4c2b-b3a9-4e5894f1597f" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="eca34d35-e534-4479-aac4-fa81d3ef0605" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="38f95b3a-0fa7-4478-b945-a2c87f517d22" >
+				<munit:payload value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="8eee9afe-d563-4323-a372-21e4dc1833fb" >
+				<flow-ref doc:name="Flow-ref to get:\address\(postcode):lm-osvc-sapi-config" doc:id="c695673c-de72-457a-9855-2558075dafc7" name="lm-osvc-sapi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="160db1ae-5ac0-4f1e-b75c-c78ae3eee99e" type="APIKIT:BAD_REQUEST"/>
+				</error-handler>
+			</try>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="get:\address\(postcode):lm-osvc-sapi-config-test-error2" doc:id="01ef4615-bfd9-40a2-87e2-e268ba612722" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0f299d0c-7ed0-44b6-8b8a-9bdd10a12c53" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="223b10ca-2f11-4b2f-889e-8487fe2d9273" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="ca82e5f9-b79d-453e-afb0-78d584f9e9c8" >
+				<munit:payload value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<try doc:name="Try" doc:id="91bbacce-b1d9-45cb-9cd9-db67bd40e16f" >
+				<flow-ref doc:name="Flow-ref to get:\address\(postcode):lm-osvc-sapi-config" doc:id="e40234fa-fbda-4c2b-a55e-129194a8cf16" name="lm-osvc-sapi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="94809e58-d044-416d-ad55-ee2f4f7a4d57" type="APIKIT:NOT_FOUND"/>
+				</error-handler>
+			</try>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="lm-osvc-sapi-main-test1" doc:id="7b6b790e-c238-4346-97ef-ec6f564286b7" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="2b30a069-9097-4389-837b-74f42e4f7c94" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/api/*" attributeName="path" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="634bf212-36af-4c04-af06-007ea7b057ad" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-osvc-sapi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="25af9486-04ad-4999-a6ab-0ed5ec150710" >
+				<munit:payload value="#[readUrl('classpath://lmosvcsapimaintest1\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://lmosvcsapimaintest1\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to lm-osvc-sapi-main" doc:id="ead41943-6244-4585-b1bd-b6add67d77d8" name="lm-osvc-sapi-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="26081bb9-4cfc-4824-8ff4-8e58fd67ed26" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import lmosvcsapimaintest1::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\address\(postcode):lm-osvc-sapi-config-test1" doc:id="d9134854-1f1b-4470-8ede-d81dd4958457" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="db9e5efc-ebb8-416c-bc89-bd62e012ef05" >
+				<munit:payload value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getaddresspostcodelmosvcsapiconfigtest1\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\address\(postcode):lm-osvc-sapi-config" doc:id="81592f40-ad03-4801-82ff-61ee037fa4a0" name="get:\address\(postcode):lm-osvc-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="410a67b8-bbd6-4339-9121-d1e52dcac011" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getaddresspostcodelmosvcsapiconfigtest1::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+</mule>

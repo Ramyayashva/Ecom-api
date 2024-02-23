@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="c6558cda-b940-4465-a0da-6612c2b65e62" >
+		<http:request-connection protocol="HTTPS" host="${locations.host}" port="${locations.port}" connectionIdleTimeout="${locations.idletimeout}" />
+	</http:request-config>
+	<flow name="implementation-get-addressFlow" doc:id="67739849-f922-4916-81ee-7369dc850539" >
+	        <logger level="INFO" doc:name="Start the flow" doc:id="f6bee277-a44f-4d36-a57f-e6dc00340a8b" message="start the flow" />
+        <ee:transform doc:name="Retrive the postcode">
+            <ee:message >
+			</ee:message>
+			<ee:variables>
+                <ee:set-variable variableName="postcode"><![CDATA[attributes.uriParams.'postcode']]></ee:set-variable>
+				<ee:set-variable variableName="postcode1" ><![CDATA[attributes.queryParams.postcode]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="Retrive Auth Token" doc:id="fa8d7a37-926b-4644-bb16-04eea2225771" name="implementation-get-addressSub_Flow"/>
+		<logger level="INFO" doc:name="Retrive Access Token" doc:id="34c1791e-3f86-45fd-aa7b-70c42b5077a7" message="#[vars.access_token]" />
+        <http:request method="GET" doc:name="GET://address Location" doc:id="1e63b274-9b47-493f-a75d-7d6185abcd6d" config-ref="HTTP_Request_configuration1" path="${locations.path}" responseTimeout="${locations.responsetimeout}">
+            <http:headers><![CDATA[#[output application/java
+---
+{
+	Authorization : vars.access_token,
+	client_id: "07aac5ff985846d4841f12b306d1f0fb",
+	client_secret: "2D6Ba4631E194Fef9B46BE2f5243E46f"
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"postcode" : vars.postcode1
+}]]]></http:query-params>
+        </http:request>
+        <logger level="INFO" doc:name="End of the flow" doc:id="918b6d6c-12da-4cef-969f-28e99c8f9646" message="final payload #[payload]" />
+	
+	</flow>
+	<sub-flow name="implementation-get-addressSub_Flow" doc:id="10338272-739f-4518-ba2e-2a54f2f3d413" >
+		<ee:cache doc:name="Cache" doc:id="47236084-c596-4bcf-a087-549d5c51d34e" cachingStrategy-ref="Caching_Strategy">
+			<http:request method="POST" doc:name="POST:/Auth Token Request" doc:id="6377a9dd-faad-4383-a7b2-ba9e069f3f8b" config-ref="HTTP_Request_configuration" path="${token.path}" responseTimeout="${token.responsetimeout}">
+            <http:body><![CDATA[#[output application/x-www-form-urlencoded
+---
+{
+grant_type: "client_credentials",
+client_id: "2b891a3b-921f-4ca3-a2a9-1cea43083f3a",
+client_secret: "lkb8Q~rdD3hyOgHEK65LG~LPA43N1TYhdMwnzbwF",
+scope: "api://2b891a3b-921f-4ca3-a2a9-1cea43083f3a/.default"
+}]]]></http:body>
+        </http:request>
+		</ee:cache>
+		<ee:transform doc:name="Set Access Token Response" doc:id="295f49cb-7926-4fdd-b6b3-7159ceb491a7">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="access_token"><![CDATA[%dw 2.0
+output application/json
+---
+payload.token_type ++ " " ++ payload.access_token]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+	</sub-flow>
+</mule>

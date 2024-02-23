@@ -1,0 +1,66 @@
+soap:
+  host: "0.0.0.0"
+  port: "22"
+  username: "HP"
+  password: "![pQgaG1hhBFK1ekKO2/33Mw==]"
+dir:
+  folder: "/C:/Users/HP/SFTPsecureKey"
+  folder2: "/C:/Users/HP/SFTPsecureKey/file"
+  folder3: "/C:/Users/HP/SFTPsecureKey/file3"
+  folder4: "/C:/Users/HP/SFTPsecureKey/file2"
+http:
+  host: "0.0.0.0"
+  port: "8082"
+  path: "/api/*"
+  readtimeout: "30000"
+  idletimeout: "40000"
+ks: 
+  file: "key_store.jks"
+  alias: "mule-server"
+  password: "![qY6KRSszo6NQs777/hunwg==]"
+client:
+  client_id: "![437fJqA8pzICS4P5nqi0e2jKG9bNsdcLXoBHQn2wa2AtTcnPinLILtMEcKiiqRMC]"
+  client_secret: "![/EsCUrYRrdsArpWrL6JoZRiniIheuMGS/v65CG1UPSwdBDGKLVeqeacSBIx1g2uK]"
+sftprequest:
+  host: "0.0.0.0"
+  port: "8082"
+  path: "/test"
+  idletimeout: "30000"
+  responsetimeout: "90000"
+
+locations:
+  host: "sit-tw-rpa-xapi.uk-e1.cloudhub.io"
+  port: "443"
+  path: "/api/locations"
+  idletimeout: "30000"
+  responsetimeout: "90000"
+token:
+  host: "login.microsoftonline.com"
+  port: "443"
+  path: "/557abecd-3214-4fbb-8e51-414b68ebb796/oauth2/v2.0/token"
+  idletimeout: "30000"
+  responsetimeout: "90000"
+request:
+  host: "lm-sftp-sysapii.us-e2.cloudhub.io"
+  port: "443"
+  path: "/api/employee"
+  idletimeout: "30000"
+  responsetimeout: "90000"
+scheduler:
+  frequency: "5"
+  startdelay: "0"
+  
+auth-token:
+  domain: "login.microsoftonline.com"
+  timeout: "30000"
+  version: "1.0"
+  port: "443"
+  path: "/557abecd-3214-4fbb-8e51-414b68ebb796/oauth2/v2.0/token"
+  method: "POST"
+object-store:
+  entryTtl: "60"
+  entryTtlUnit: "MINUTES"
+  maxEntries: "5"
+  persistent: "true"
+  expirationInterval: "60"
+  expirationIntervalUnit: "MINUTES"
